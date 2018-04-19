@@ -22,11 +22,6 @@ object SparkWordCount
     // Create a Scala Spark Context. and passing conf object to it
     val sc = new SparkContext(conf)
 
-
-    //Setting Loging Level to get only WARNING message
-    sc.setLogLevel("WARN")
-
-
     // Load our input data.
     val textRDD =  sc.textFile("src\\main\\resource\\sample_data.txt")
 
@@ -34,13 +29,13 @@ object SparkWordCount
     val wordsRDD = textRDD.flatMap(_.split(" "))
 
     // Generating Key-Value pair for each word
-    val wordKeyValueRDD = wordsRDD.map(x=>(x.toString,1))
+    val wordKeyValueRDD = wordsRDD.map(x=>(x,1))
 
     // Summing Values Having Same Key
     val sumByWordRDD = wordKeyValueRDD.reduceByKey((x,y)=>x+y)
 
     //Sorting Output basing on No Of Occurrence
-    val sortingPairRDD = sumByWordRDD.sortBy(_._2,false,1)
+    val sortingPairRDD = sumByWordRDD.sortBy(_._2)
 
     // Printing output on screen
     sortingPairRDD.foreach(println)
